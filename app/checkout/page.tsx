@@ -37,21 +37,31 @@ function CheckoutForm() {
     e.preventDefault();
     setSubmitting(true);
 
+    const payload = {
+      name,
+      email,
+      plan: isPro ? "Pro" : "Free",
+      features: featureNames.join(", "),
+    };
+
+    console.log("[Checkout] Submitting payload:", payload);
+    console.log("[Checkout] Google Script URL:", GOOGLE_SCRIPT_URL || "(not set)");
+
     try {
-      if (GOOGLE_SCRIPT_URL) {
-        await fetch(GOOGLE_SCRIPT_URL, {
+      if (GOOGLE_SCRIPT_URL && !GOOGLE_SCRIPT_URL.includes("PASTE")) {
+        const res = await fetch(GOOGLE_SCRIPT_URL, {
           method: "POST",
           mode: "no-cors",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name,
-            email,
-            plan: isPro ? "Pro" : "Free",
-            features: featureNames.join(", "),
-          }),
+          body: JSON.stringify(payload),
         });
+        console.log("[Checkout] Fetch completed, status:", res.status, res.type);
+      } else {
+        console.warn("[Checkout] Google Script URL not configured. Set NEXT_PUBLIC_GOOGLE_SCRIPT_URL in .env.local");
       }
-    } catch {}
+    } catch (err) {
+      console.error("[Checkout] Error submitting to Google Sheets:", err);
+    }
 
     setSubmitted(true);
     setSubmitting(false);
