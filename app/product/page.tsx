@@ -1,3 +1,9 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+
 const sections = [
   {
     title: "Editing",
@@ -5,6 +11,7 @@ const sections = [
       "Powerful tools to cut, color-grade, and polish your content — all in one place.",
     features: [
       {
+        id: "editing-multitrack",
         label: "Multi-track video and audio editing",
         icon: (
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-7 w-7">
@@ -15,6 +22,7 @@ const sections = [
         ),
       },
       {
+        id: "editing-ai-clips",
         label: "AI-assisted clip selection and highlights",
         icon: (
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-7 w-7">
@@ -23,6 +31,7 @@ const sections = [
         ),
       },
       {
+        id: "editing-export",
         label: "One-click export for every platform",
         icon: (
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-7 w-7">
@@ -33,6 +42,7 @@ const sections = [
         ),
       },
       {
+        id: "editing-personal-ai",
         label: "Personal AI trained on your content for new ideas",
         icon: (
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-7 w-7">
@@ -46,6 +56,7 @@ const sections = [
         ),
       },
       {
+        id: "editing-scripts",
         label: "Script and caption generation from your footage",
         icon: (
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-7 w-7">
@@ -56,6 +67,7 @@ const sections = [
         ),
       },
       {
+        id: "editing-thumbnails",
         label: "Thumbnail and title suggestions based on your style",
         icon: (
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-7 w-7">
@@ -73,6 +85,7 @@ const sections = [
       "Plan and publish across every channel without ever leaving your workflow.",
     features: [
       {
+        id: "scheduling-calendar",
         label: "Cross-platform scheduling calendar",
         icon: (
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-7 w-7">
@@ -84,6 +97,7 @@ const sections = [
         ),
       },
       {
+        id: "scheduling-optimal",
         label: "Optimal posting-time suggestions",
         icon: (
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-7 w-7">
@@ -93,6 +107,7 @@ const sections = [
         ),
       },
       {
+        id: "scheduling-republish",
         label: "Automated republishing and drip campaigns",
         icon: (
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-7 w-7">
@@ -110,6 +125,7 @@ const sections = [
       "Handle contracts, invoices, and team coordination so you can focus on creating.",
     features: [
       {
+        id: "admin-contracts",
         label: "Contract and deal-memo templates",
         icon: (
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-7 w-7">
@@ -121,6 +137,7 @@ const sections = [
         ),
       },
       {
+        id: "admin-invoicing",
         label: "Invoicing and payment tracking",
         icon: (
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-7 w-7">
@@ -130,6 +147,7 @@ const sections = [
         ),
       },
       {
+        id: "admin-team",
         label: "Team roles, permissions, and approval flows",
         icon: (
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-7 w-7">
@@ -137,6 +155,36 @@ const sections = [
             <circle cx="9" cy="7" r="4" />
             <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
             <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+        ),
+      },
+      {
+        id: "admin-email-summary",
+        label: "AI email summaries for long threads",
+        icon: (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-7 w-7">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+            <polyline points="22 6 12 13 2 6" />
+          </svg>
+        ),
+      },
+      {
+        id: "admin-email-tracking",
+        label: "Email tracking with read receipts and follow-ups",
+        icon: (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-7 w-7">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+            <polyline points="22 4 12 14.01 9 11.01" />
+          </svg>
+        ),
+      },
+      {
+        id: "admin-inbox",
+        label: "Unified inbox across deals, talent, and projects",
+        icon: (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-7 w-7">
+            <polyline points="22 12 16 12 14 15 10 15 8 12 2 12" />
+            <path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" />
           </svg>
         ),
       },
@@ -148,6 +196,7 @@ const sections = [
       "Know where your content lives, how it spreads, and prove it's yours.",
     features: [
       {
+        id: "tracking-repost",
         label: "Track where your content is reposted or embedded",
         icon: (
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-7 w-7">
@@ -158,6 +207,7 @@ const sections = [
         ),
       },
       {
+        id: "tracking-ownership",
         label: "Immutable ownership records for every asset",
         icon: (
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-7 w-7">
@@ -168,6 +218,7 @@ const sections = [
         ),
       },
       {
+        id: "tracking-takedown",
         label: "Unauthorized use alerts and takedown assistance",
         icon: (
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-7 w-7">
@@ -182,6 +233,29 @@ const sections = [
 ];
 
 export default function ProductPage() {
+  const FREE_LIMIT = 5;
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+
+  function toggle(id: string) {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  }
+
+  const needsPro = selected.size > FREE_LIMIT;
+  const router = useRouter();
+
+  function handleCheckout() {
+    localStorage.setItem("allanki_selected_features", JSON.stringify(Array.from(selected)));
+    router.push(needsPro ? "/checkout?plan=pro" : "/checkout?plan=free");
+  }
+
   return (
     <div
       className="mx-auto max-w-4xl px-6 py-16"
@@ -201,27 +275,77 @@ export default function ProductPage() {
             <h2 className="text-2xl font-semibold">{section.title}</h2>
             <p className="mt-3 text-lg leading-relaxed">{section.description}</p>
             <div className="mt-6 grid grid-cols-3 gap-4">
-              {section.features.map((feature) => (
-                <div
-                  key={feature.label}
-                  className="flex flex-col items-center gap-3 rounded-2xl p-5 text-center transition-opacity hover:opacity-60 cursor-pointer"
-                  style={{ backgroundColor: "#F0ECE1" }}
-                >
-                  <div
-                    className="flex h-14 w-14 items-center justify-center rounded-xl"
-                    style={{ backgroundColor: "#2D1B4E", color: "#F6F2E7" }}
+              {section.features.map((feature) => {
+                const isSelected = selected.has(feature.id);
+                return (
+                  <button
+                    key={feature.id}
+                    onClick={() => toggle(feature.id)}
+                    className="relative flex flex-col items-center gap-3 rounded-2xl p-5 text-center transition-all cursor-pointer"
+                    style={{
+                      backgroundColor: isSelected ? "#2D1B4E" : "#F0ECE1",
+                      color: isSelected ? "#F6F2E7" : "#2D1B4E",
+                    }}
                   >
-                    {feature.icon}
-                  </div>
-                  <span className="text-sm font-medium leading-snug">
-                    {feature.label}
-                  </span>
-                </div>
-              ))}
+                    {isSelected && (
+                      <span className="absolute top-2 right-2">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      </span>
+                    )}
+                    <div
+                      className="flex h-14 w-14 items-center justify-center rounded-xl transition-colors"
+                      style={{
+                        backgroundColor: isSelected ? "#F6F2E7" : "#2D1B4E",
+                        color: isSelected ? "#2D1B4E" : "#F6F2E7",
+                      }}
+                    >
+                      {feature.icon}
+                    </div>
+                    <span className="text-sm font-medium leading-snug">
+                      {feature.label}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </section>
         </div>
       ))}
+
+      <AnimatePresence>
+        {selected.size > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.2 }}
+            className="fixed bottom-8 left-1/2 z-50 -translate-x-1/2"
+          >
+            <div className="flex flex-col items-center gap-2">
+              <button
+                onClick={handleCheckout}
+                className="flex items-center gap-3 rounded-lg px-8 py-4 text-sm font-semibold uppercase tracking-widest text-white shadow-lg transition-opacity hover:opacity-90"
+                style={{ backgroundColor: "#2D1B4E" }}
+              >
+                {needsPro
+                  ? `Get Pro — ${selected.size} features selected`
+                  : `Check out with ${selected.size} free feature${selected.size !== 1 ? "s" : ""}`}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
+              </button>
+              {needsPro && (
+                <span className="text-xs font-medium text-white opacity-80">
+                  More than {FREE_LIMIT} features requires the Pro plan
+                </span>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
