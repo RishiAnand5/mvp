@@ -85,8 +85,8 @@ const sections = [
       "Plan and publish across every channel without ever leaving your workflow.",
     features: [
       {
-        id: "scheduling-calendar",
-        label: "Cross-platform scheduling calendar",
+        id: "scheduling-cross-platform",
+        label: "Cross-platform scheduling & posting",
         icon: (
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-7 w-7">
             <rect x="3" y="4" width="18" height="18" rx="2" />
@@ -235,6 +235,7 @@ const sections = [
 export default function ProductPage() {
   const FREE_LIMIT = 5;
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const router = useRouter();
 
   function toggle(id: string) {
     setSelected((prev) => {
@@ -249,7 +250,6 @@ export default function ProductPage() {
   }
 
   const needsPro = selected.size > FREE_LIMIT;
-  const router = useRouter();
 
   function handleCheckout() {
     localStorage.setItem("allanki_selected_features", JSON.stringify(Array.from(selected)));
@@ -278,35 +278,58 @@ export default function ProductPage() {
               {section.features.map((feature) => {
                 const isSelected = selected.has(feature.id);
                 return (
-                  <button
-                    key={feature.id}
-                    onClick={() => toggle(feature.id)}
-                    className="relative flex flex-col items-center gap-3 rounded-2xl p-5 text-center transition-all cursor-pointer"
-                    style={{
-                      backgroundColor: isSelected ? "#2D1B4E" : "#F0ECE1",
-                      color: isSelected ? "#F6F2E7" : "#2D1B4E",
-                    }}
-                  >
-                    {isSelected && (
-                      <span className="absolute top-2 right-2">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
-                          <polyline points="20 6 9 17 4 12" />
-                        </svg>
-                      </span>
-                    )}
-                    <div
-                      className="flex h-14 w-14 items-center justify-center rounded-xl transition-colors"
+                  <div key={feature.id} className="flex flex-col gap-2">
+                    <button
+                      onClick={() => toggle(feature.id)}
+                      className="relative flex flex-col items-center gap-3 rounded-2xl p-5 text-center transition-all cursor-pointer"
                       style={{
-                        backgroundColor: isSelected ? "#F6F2E7" : "#2D1B4E",
-                        color: isSelected ? "#2D1B4E" : "#F6F2E7",
+                        backgroundColor: isSelected ? "#2D1B4E" : "#F0ECE1",
+                        color: isSelected ? "#F6F2E7" : "#2D1B4E",
                       }}
                     >
-                      {feature.icon}
-                    </div>
-                    <span className="text-sm font-medium leading-snug">
-                      {feature.label}
-                    </span>
-                  </button>
+                      {isSelected && (
+                        <span className="absolute top-2 right-2">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                        </span>
+                      )}
+                      <div
+                        className="flex h-14 w-14 items-center justify-center rounded-xl transition-colors"
+                        style={{
+                          backgroundColor: isSelected ? "#F6F2E7" : "#2D1B4E",
+                          color: isSelected ? "#2D1B4E" : "#F6F2E7",
+                        }}
+                      >
+                        {feature.icon}
+                      </div>
+                      <span className="text-sm font-medium leading-snug">
+                        {feature.label}
+                      </span>
+                      {(feature.id === "editing-ai-clips" ||
+                        feature.id === "scheduling-cross-platform") && (
+                        <span className="mt-1 rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide">
+                          Core offering
+                        </span>
+                      )}
+                    </button>
+                    {(feature.id === "editing-ai-clips" ||
+                      feature.id === "scheduling-cross-platform") && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const slug =
+                            feature.id === "editing-ai-clips"
+                              ? "editing-ai-clips"
+                              : "scheduling-cross-platform";
+                          router.push(`/product/${slug}`);
+                        }}
+                        className="text-[11px] font-medium text-[#2D1B4E] underline underline-offset-2"
+                      >
+                        Learn more about this offering
+                      </button>
+                    )}
+                  </div>
                 );
               })}
             </div>

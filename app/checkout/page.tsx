@@ -11,11 +11,13 @@ const GOOGLE_SCRIPT_URL = process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL || "";
 function CheckoutForm() {
   const searchParams = useSearchParams();
   const plan = searchParams.get("plan") || "free";
+  const product = searchParams.get("product");
   const isPro = plan === "pro";
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
+  const [pricingType, setPricingType] = useState<"unlimited" | "tokens" | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -27,6 +29,10 @@ function CheckoutForm() {
         setSelectedFeatures(ids);
       } catch {}
     }
+    const storedPricing = localStorage.getItem("allanki_pricing_type");
+    if (storedPricing === "unlimited" || storedPricing === "tokens") {
+      setPricingType(storedPricing);
+    }
   }, []);
 
   const featureNames = selectedFeatures
@@ -37,10 +43,28 @@ function CheckoutForm() {
     e.preventDefault();
     setSubmitting(true);
 
+    // Determine the plan name with pricing info included
+    let planName = "";
+    if (product === "ai-assisted-editing") {
+      planName = pricingType === "unlimited" 
+        ? "AI Editing - Unlimited" 
+        : pricingType === "tokens" 
+        ? "AI Editing - Token-based" 
+        : "AI Editing";
+    } else if (product === "cross-platform-scheduling") {
+      planName = pricingType === "unlimited" 
+        ? "Scheduling - Unlimited" 
+        : pricingType === "tokens" 
+        ? "Scheduling - Token-based" 
+        : "Scheduling";
+    } else {
+      planName = isPro ? "Pro" : "Free";
+    }
+
     const payload = {
       name,
       email,
-      plan: isPro ? "Pro" : "Free",
+      plan: planName,
       features: featureNames.join(", "),
     };
 
@@ -126,9 +150,19 @@ function CheckoutForm() {
         >
           Checkout
         </h1>
-        <p className="mt-2 text-center text-lg opacity-70">
-          {isPro ? "Allanki Pro — $15 USD / month" : "Allanki Free — $0 USD"}
-        </p>
+        {product === "ai-assisted-editing" ? (
+          <p className="mt-2 text-center text-lg opacity-70">
+            AI-assisted Editing — {pricingType === "tokens" ? "$50 USD" : "$200 USD / Month"}
+          </p>
+        ) : product === "cross-platform-scheduling" ? (
+          <p className="mt-2 text-center text-lg opacity-70">
+            Cross-Platform Scheduling — {pricingType === "tokens" ? "$25 USD" : "$50 USD / Month"}
+          </p>
+        ) : (
+          <p className="mt-2 text-center text-lg opacity-70">
+            {isPro ? "Allanki Pro — $15 USD / month" : "Allanki Free — $0 USD"}
+          </p>
+        )}
 
         {featureNames.length > 0 && (
           <div className="mt-6 rounded-lg border p-4" style={{ borderColor: "#d4d4d4", backgroundColor: "#FAFAF7" }}>
@@ -181,7 +215,7 @@ function CheckoutForm() {
             />
           </div>
 
-          {isPro && (
+          {(isPro || product === "ai-assisted-editing" || product === "cross-platform-scheduling") && (
             <>
               <div>
                 <label htmlFor="card" className="block text-sm font-medium mb-1.5">
@@ -233,12 +267,24 @@ function CheckoutForm() {
             className="mt-4 w-full rounded-lg py-4 text-sm font-semibold uppercase tracking-widest text-white transition-opacity hover:opacity-90 disabled:opacity-50"
             style={{ backgroundColor: "#2D1B4E" }}
           >
-            {submitting ? "Submitting..." : isPro ? "Submit payment" : "Get started"}
+            {submitting
+              ? "Submitting..."
+              : product === "ai-assisted-editing" || product === "cross-platform-scheduling"
+              ? "Submit payment"
+              : isPro
+              ? "Submit payment"
+              : "Get started"}
           </button>
         </form>
 
         <p className="mt-6 text-center text-xs opacity-50">
-          {isPro
+          {(product === "ai-assisted-editing" || product === "cross-platform-scheduling") && pricingType === "unlimited"
+            ? "You can cancel anytime. No long-term commitment."
+            : (product === "ai-assisted-editing" || product === "cross-platform-scheduling") && pricingType === "tokens"
+            ? product === "ai-assisted-editing"
+              ? "One-time payment for 10 tokens. Tokens never expire."
+              : "One-time payment for 10 tokens. Tokens never expire."
+            : isPro
             ? "You can cancel anytime. No long-term commitment."
             : "No credit card required."}
         </p>

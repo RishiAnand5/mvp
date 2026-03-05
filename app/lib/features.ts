@@ -5,7 +5,7 @@ export const featureLabels: Record<string, string> = {
   "editing-personal-ai": "Personal AI trained on your content for new ideas",
   "editing-scripts": "Script and caption generation from your footage",
   "editing-thumbnails": "Thumbnail and title suggestions based on your style",
-  "scheduling-calendar": "Cross-platform scheduling calendar",
+  "scheduling-cross-platform": "Cross-platform scheduling & posting",
   "scheduling-optimal": "Optimal posting-time suggestions",
   "scheduling-republish": "Automated republishing and drip campaigns",
   "admin-contracts": "Contract and deal-memo templates",
